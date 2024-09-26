@@ -9,22 +9,22 @@
  */
 export function addStylesheetRules(rules = []) {
   // 获取样式表
-  const styleSheet = document.styleSheets[0];
+  const styleSheet = document.styleSheets[0]
 
   // 遍历规则列表并添加
   rules.forEach((ruleText) => {
     // 检查规则是否已存在
-    let ruleExists = false;
+    let ruleExists = false
     for (let i = 0; i < styleSheet.cssRules.length; i++) {
       if (styleSheet.cssRules[i].cssText === ruleText) {
-        ruleExists = true;
-        break;
+        ruleExists = true
+        break
       }
     }
 
     // 如果规则不存在，则添加到样式表中
     if (!ruleExists) {
-      styleSheet.insertRule(ruleText, styleSheet.cssRules.length);
+      styleSheet.insertRule(ruleText, styleSheet.cssRules.length)
     }
-  });
+  })
 }
