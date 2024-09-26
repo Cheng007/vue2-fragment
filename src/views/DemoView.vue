@@ -56,10 +56,23 @@ onMounted(() => {
 <style lang="css" scoped>
 .demo-wrap {
   .title {
+    position: relative;
+    text-indent: 20px;
     cursor: pointer;
+    &::before {
+      position: absolute;
+      left: 10px;
+      content: '';
+      background: rgba(4, 4, 255, 0.973);
+      width: 4px;
+      height: 100%;
+      border-radius: 2px;
+    }
   }
   .comp {
-    height: 110vh;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid gainsboro;
   }
 }
 </style>
