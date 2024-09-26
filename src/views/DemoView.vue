@@ -1,43 +1,55 @@
 <script setup lang="ts">
-import { onMounted, shallowRef, type Component } from 'vue'
+import { nextTick, onMounted, shallowRef, type Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
 
-const modules: Record<string, { default: Component }> = import.meta.glob('@/**/Demo*.vue', {
-  eager: true
-})
+const modules: Record<string, { default: Component }> = import.meta.glob(
+  ['@/**/Demo*.vue', '@/**/demo*.vue'],
+  {
+    eager: true
+  }
+)
 
 interface Comp {
   name: string
+  href: string
   component: Component
 }
 
 const comps = shallowRef<Comp[]>([])
 
 comps.value = Object.entries(modules).map(([filePath, component], idx) => {
-  const name = filePath.split('/').slice(-1)[0].replace('.vue', '') ?? `Demo${idx}`
+  // vue 选项式api里的 name 属性
+  const compName = component.default.name
+  const name = (compName || filePath.split('/').slice(-1)[0].replace('.vue', '')) ?? `Demo${idx}`
   return {
     name,
+    href: `#${name}`,
     component: component.default
   }
 })
 
 const toView = (item: Comp) => {
-  router.replace({
-    name: route.name,
-    query: {
-      target: item.name
-    }
-  })
+  // router.replace({
+  //   name: route.name,
+  //   query: {
+  //     target: item.name
+  //   }
+  // })
 }
 
-onMounted(() => {
-  const { target } = route.query
-  if (target) {
-    const el = `#${target}`
-    document.querySelector(el)?.scrollIntoView()
+onMounted(async () => {
+  const { hash } = route
+  if (hash) {
+    console.log(hash)
+    setTimeout(() => {
+      const el = document.querySelector(hash)
+      el?.scrollIntoView({
+        behavior: 'smooth'
+      })
+    }, 500)
   }
 })
 </script>
@@ -45,7 +57,10 @@ onMounted(() => {
 <template>
   <div class="demo-wrap">
     <div v-for="i of comps" :key="i.name">
-      <div class="title" @click="toView(i)" :id="i.name">{{ i.name }}</div>
+      <h2 class="title" @click="toView(i)" :id="i.name">
+        <a :href="i.href">#</a>
+        {{ i.name }}
+      </h2>
       <div class="comp">
         <component :is="i.component"></component>
       </div>
@@ -57,22 +72,14 @@ onMounted(() => {
 .demo-wrap {
   .title {
     position: relative;
-    text-indent: 20px;
-    cursor: pointer;
-    &::before {
-      position: absolute;
-      left: 10px;
-      content: '';
-      background: rgba(4, 4, 255, 0.973);
-      width: 4px;
-      height: 100%;
-      border-radius: 2px;
-    }
+    text-indent: 10px;
+    margin: 20px 0;
   }
   .comp {
     margin: 10px;
     padding: 10px;
     border: 1px solid gainsboro;
+    background: #fff;
   }
 }
 </style>
