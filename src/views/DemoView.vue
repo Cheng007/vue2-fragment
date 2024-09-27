@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { nextTick, onMounted, shallowRef, type Component } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, shallowRef, type Component } from 'vue'
+import { useRoute } from 'vue-router'
 
-const router = useRouter()
 const route = useRoute()
 
 const modules: Record<string, { default: Component }> = import.meta.glob(
@@ -20,10 +19,10 @@ interface Comp {
 
 const comps = shallowRef<Comp[]>([])
 
-comps.value = Object.entries(modules).map(([filePath, component], idx) => {
+comps.value = Object.entries(modules).map(([filePath, component]) => {
   // vue 选项式api里的 name 属性
   const compName = component.default.name
-  const name = (compName || filePath.split('/').slice(-1)[0].replace('.vue', '')) ?? `Demo${idx}`
+  const name = compName || filePath.split('/').slice(-1)[0].replace('.vue', '')
   return {
     name,
     href: `#${name}`,
