@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { onMounted, shallowRef, type Component } from 'vue'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
 
 const modules: Record<string, { default: Component }> = import.meta.glob(
   ['@/**/Demo*.vue', '@/**/demo*.vue'],
@@ -31,26 +28,10 @@ comps.value = Object.entries(modules).map(([filePath, component]) => {
 })
 
 const toView = (item: Comp) => {
-  // router.replace({
-  //   name: route.name,
-  //   query: {
-  //     target: item.name
-  //   }
-  // })
+  console.log(item)
 }
 
-onMounted(async () => {
-  const { hash } = route
-  if (hash) {
-    console.log(hash)
-    setTimeout(() => {
-      const el = document.querySelector(hash)
-      el?.scrollIntoView({
-        behavior: 'smooth'
-      })
-    }, 500)
-  }
-})
+onMounted(() => {})
 </script>
 
 <template>
